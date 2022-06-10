@@ -28,7 +28,6 @@
 		var currentLine = 0
 		var currentIndex = 0
 		var currentLetters = ""
-		var board = []
 
 		var hasWon = false
 
@@ -53,6 +52,11 @@
 		function setGame() {
 			chooseFlower()
 			createBoard()
+			
+			today = new Date()
+			var dayStatus = localStorage.getItem("" + today.getDate() + (today.getMonth() + 1) + today.getFullYear())
+			if (dayStatus != "")
+				fillBoard()
 		}
 
 		function createBoard() {
@@ -61,8 +65,9 @@
 				for (j = 0; j < word.length; j++) {
 					$("#r" + i).append("<div class='case' id='c" + (word.length*i + j) + "'></div>")
 				}
-				localStorage.setItem("line" + i, "")
-				board.push("")
+
+				if (localStorage.getItem("line" + i) != "")
+					localStorage.setItem("line" + i, "")
 			}
 		}
 
@@ -93,16 +98,20 @@
 			localStorage.setItem('name',word)
 		}
 
+		function fillBoard() {
+			var line = localStorage.getItem("line" + i)
+		}
+
 		function pressKey(key) {
 			if (!hasWon) {
 				if (key == "enter") {
 					if (currentLetters.length == word.length) {
 						checkLetters()
 						
-						if (currentLetters == word) {
-							hasWon = true
-							console.log("bravo")
-						}
+						if (currentLetters == word)
+							onWin()
+						
+						localStorage.setItem("line" + currentLine, currentLetters)
 
 						currentLine++
 						currentIndex = 0
@@ -143,6 +152,11 @@
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--dark-color)";
 				}
 			}
+		}
+
+		function onWin() {
+			hasWon = true
+			localStorage.setItem("" + today.getDate() + (today.getMonth() + 1) + today.getFullYear(), "ggwp")
 		}
 
 	</script>
