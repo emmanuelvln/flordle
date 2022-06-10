@@ -24,6 +24,8 @@
 :root {
     --light-color: #404040ff;
     --dark-color: #262626ff;
+    --yellow: #c9b458;
+    --green: #6aaa64;
 }
 
 html {
