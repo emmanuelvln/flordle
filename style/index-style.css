@@ -1,0 +1,120 @@
+@font-face {
+    font-family: Evogria;
+    src: url('../fonts/Evogria.otf');
+}
+@font-face {
+    font-family: Sofia;
+    src: url('../fonts/Sofia.otf');
+    font-display: swap;
+}
+@font-face {
+    font-family: Blanch;
+    src: url('../fonts/Blanch.otf');
+    font-display: swap;
+}
+@font-face {
+    font-family: KaushanScript;
+    src: url('../fonts/KaushanScript.otf');
+}
+@font-face {
+    font-family: ConfigCondensed;
+    src: url('../fonts/ConfigCondensed.otf');
+}
+
+:root {
+    --light-color: #404040ff;
+    --dark-color: #262626ff;
+}
+
+html {
+    scrollbar-width: thin;
+}
+
+body {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-left: 0;
+    height: 100vh;
+    background-color: var(--light-color);
+}
+
+/* HEADER */
+
+#header {
+    background-color: var(--dark-color);
+    font-family: Sofia;
+    color: white;
+    text-align: center;
+    padding-bottom: 7px;
+    font-size: 30px;
+}
+
+#game {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.board {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+}
+
+.case {
+    width: 60px;
+    height: 60px;
+    margin: 4px;
+    border: 3px solid;
+    border-radius: 6px;
+    border-color: var(--dark-color);
+    color: white;
+    font-size: 32px;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#keyboard {
+    display: flex;
+    flex-direction: column;
+}
+
+.keyboard-row {
+    display: flex;
+    margin-top: 10px;
+}
+
+.key {
+    height: 60px;
+    background-color: grey;
+    box-shadow: 0px 3px var(--dark-color);
+    margin: 2px;
+    border-radius: 6px;
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-weight: bolder;
+}
+
+.key:hover {
+    filter: brightness(80%);
+}
+
+.key-smol {
+    width: 42px;
+    text-transform: capitalize;
+}
+
+.key-large {
+    width: 88px;
+}

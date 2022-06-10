@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+	<meta property="og:image" content="https://emmanuelvln.github.io/amf/photos/flower2.png" />
+	<meta property="og:description" content="Surely you know Wordle. Well that's not it: thats Flordle" />
+	<meta property="og:url"content="https://emmanuelvln.github.io/flordle/" />
+	<meta property="og:title" content="Flordle" />
+	
+	<link rel="icon" href="https://raw.githubusercontent.com/emmanuelvln/amf/master/imgs/favicon.png" type="image/icon type">
+	<link rel="stylesheet" type="text/css" href="style/index-style.css">
+
+	<title>Flordle</title>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+
+		var data
+		var flower = 1
+		var word = ""
+
+		var currentLine = 0
+		var currentIndex = 0
+		var currentLetters = ""
+		var board = []
+
+		var gameStatus = false
+
+		$(document).ready(function(){
+			appendContent();
+		});
+
+		var appendContent=function(){
+		    fetch('https://emmanuelvln.github.io/amf/lists/liste.json')
+		        .then(function (response) {
+		            return response.json();
+		        })
+		        .then(function (l) {
+					data = l
+		            setGame();
+		        })
+		        .catch(function (err) {
+		            console.log('error: ' + err);
+		        });
+		};
+
+		function setGame() {
+			chooseFlower()
+			createBoard()
+		}
+
+		function createBoard() {
+			for (i = 0; i < 6; i++) {
+				$(".board").append("<div class='row' id='r" + i + "'></div>")
+				for (j = 0; j < word.length; j++) {
+					$("#r" + i).append("<div class='case' id='c" + (word.length*i + j) + "'></div>")
+				}
+				localStorage.setItem("line" + i, "")
+				board.push("")
+			}
+		}
+
+		function chooseFlower() {
+			var today = new Date()
+			var f = Math.pow((today.getDay() + today.getFullYear() + today.getMonth()), today.getDay() * today.getMonth()) % 200
+
+			var name
+			
+			while (true) {
+				if (data[f].nom == "n / a")
+					f++
+			
+				var names = data[f].nom.split(' ')
+				if (names[0].length <= 3)
+					f++
+				else {
+					name = names[0]
+					break
+				}
+
+				f = f % 200
+			}
+			
+			flower = f
+			localStorage.setItem('flower',flower)
+			word = name.toLowerCase()
+			localStorage.setItem('name',word)
+		}
+
+		function pressKey(key) {
+			if (key == "enter") {
+				if (currentLetters.length == word.length) {
+					checkLetters()
+					
+					if (currentLetters == word) {
+						gameStatus = true
+						console.log("bravo")
+					}
+
+					currentLine++
+					currentIndex = 0
+					currentLetters = ""
+				}
+			}
+			else if (key == "suppr") {
+				if (currentIndex > 0) {
+					currentIndex--
+					document.getElementById('c' + (currentLine * word.length + currentIndex)).innerHTML = ""
+					document.getElementById('c' + (currentLine * word.length + currentIndex)).style.borderColor = "var(--dark-color)"
+					currentLetters = currentLetters.slice(0,-1)
+				}
+			}
+			else {
+				if (currentIndex < word.length) {
+					currentLetters += key
+					document.getElementById('c' + (currentLine * word.length + currentIndex)).innerHTML = key.toUpperCase()
+					document.getElementById('c' + (currentLine * word.length + currentIndex)).style.borderColor = "grey"
+					currentIndex++
+				}
+			}
+		}
+
+		function checkLetters() {
+			for (i = 0; i < currentLetters.length; i ++) {
+				if (currentLetters[i] == word[i]) {
+					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "green";
+					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "green";
+				}
+				else if (word.includes(currentLetters[i])) {
+					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "yellow";
+					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "yellow";
+				}
+				else {
+					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--dark-color)";
+					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--dark-color)";
+				}
+			}
+		}
+
+	</script>
+</head>
+
+<body>
+
+	<div id="header">flordle</div>
+
+	<div id="game">
+
+		<div class="board"></div>
+
+		<div id="keyboard">
+			<div class="keyboard-row">
+				<div class="key key-smol" onclick="pressKey('a')">a</div>
+				<div class="key key-smol" onclick="pressKey('z')">z</div>
+				<div class="key key-smol" onclick="pressKey('e')">e</div>
+				<div class="key key-smol" onclick="pressKey('r')">r</div>
+				<div class="key key-smol" onclick="pressKey('t')">t</div>
+				<div class="key key-smol" onclick="pressKey('y')">y</div>
+				<div class="key key-smol" onclick="pressKey('u')">u</div>
+				<div class="key key-smol" onclick="pressKey('i')">i</div>
+				<div class="key key-smol" onclick="pressKey('o')">o</div>
+				<div class="key key-smol" onclick="pressKey('p')">p</div>
+			</div>
+
+			<div class="keyboard-row">
+				<div class="key key-smol" onclick="pressKey('q')">q</div>
+				<div class="key key-smol" onclick="pressKey('s')">s</div>
+				<div class="key key-smol" onclick="pressKey('d')">d</div>
+				<div class="key key-smol" onclick="pressKey('f')">f</div>
+				<div class="key key-smol" onclick="pressKey('g')">g</div>
+				<div class="key key-smol" onclick="pressKey('h')">h</div>
+				<div class="key key-smol" onclick="pressKey('j')">j</div>
+				<div class="key key-smol" onclick="pressKey('k')">k</div>
+				<div class="key key-smol" onclick="pressKey('l')">l</div>
+				<div class="key key-smol" onclick="pressKey('m')">m</div>
+			</div>
+
+			<div class="keyboard-row">
+				<div class="key key-large" onclick="pressKey('enter')">
+					<img height="15px" src="enter.png">
+				</div>
+				<div class="key key-smol" onclick="pressKey('w')">w</div>
+				<div class="key key-smol" onclick="pressKey('x')">x</div>
+				<div class="key key-smol" onclick="pressKey('c')">c</div>
+				<div class="key key-smol" onclick="pressKey('v')">v</div>
+				<div class="key key-smol" onclick="pressKey('b')">b</div>
+				<div class="key key-smol" onclick="pressKey('n')">n</div>
+				<div class="key key-large" onclick="pressKey('suppr')">
+					<img height="15px" src="suppr.png">
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>
