@@ -66,7 +66,7 @@
 					$("#r" + i).append("<div class='case' id='c" + (word.length*i + j) + "'></div>")
 				}
 
-				if (localStorage.getItem("line" + i) != "")
+				if (localStorage.getItem("line" + i) == null)
 					localStorage.setItem("line" + i, "")
 			}
 		}
@@ -99,7 +99,9 @@
 		}
 
 		function fillBoard() {
-			var line = localStorage.getItem("line" + i)
+			for (i = 0; i < 6; i++) {
+
+			}
 		}
 
 		function pressKey(key) {
@@ -167,6 +169,12 @@
 	<div id="header">flordle</div>
 
 	<div id="game">
+
+		<div id="desc">
+			<p class="desc-item">Vous connaissez Wordle ? Eh bien c'est pareil mais avec des noms de fleurs.</p>
+			<p class="desc-item">Si le nom d'une fleur est composé, il ne faut cependant deviner que la première partie : si la fleur est la Nigritelle noire, il ne faut devenir que Nigritelle.</p>
+			<p class="desc-item">Ceci est un Work In Progress donc de nombreux éléments peuvent diverger du classique Wordle même si l'important reste le même.</p>
+		</div>
 
 		<div class="board"></div>
 
