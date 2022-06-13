@@ -52,22 +52,15 @@
 		function setGame() {
 			chooseFlower()
 			createBoard()
-			
-			today = new Date()
-			var dayStatus = localStorage.getItem("" + today.getDate() + (today.getMonth() + 1) + today.getFullYear())
-			if (dayStatus != "")
-				fillBoard()
+			updateBoard()
 		}
 
 		function createBoard() {
-			for (i = 0; i < 6; i++) {
+			for (let i = 0; i < 6; i++) {
 				$(".board").append("<div class='row' id='r" + i + "'></div>")
-				for (j = 0; j < word.length; j++) {
+				for (let j = 0; j < word.length; j++) {
 					$("#r" + i).append("<div class='case' id='c" + (word.length*i + j) + "'></div>")
 				}
-
-				if (localStorage.getItem("line" + i) == null)
-					localStorage.setItem("line" + i, "")
 			}
 		}
 
@@ -98,9 +91,25 @@
 			localStorage.setItem('name',word)
 		}
 
-		function fillBoard() {
-			for (i = 0; i < 6; i++) {
+		function updateBoard() {
+			today = new Date()
 
+			var todayBoard = JSON.parse(localStorage.getItem("dayBoard"))
+			
+			if (todayBoard == null || todayBoard.day != "" + today.getDate() + (today.getMonth() + 1) + today.getFullYear()) {
+				var dayBoard = { "day": "" + today.getDate() + (today.getMonth() + 1) + today.getFullYear(), "line0": "", "line1": "", "line2": "", "line3": "", "line4": "", "line5": "" };
+				localStorage.setItem("dayBoard", JSON.stringify(dayBoard))
+			}
+			else {
+				for (let i = 0; i < 6; i++) {
+					var line = todayBoard["line" + i]
+					if (line != "") {
+						for (let j = 0; j < line.length; j++) {
+							pressKey(line[j])
+						}
+						pressKey("enter")
+					}
+				}
 			}
 		}
 
@@ -125,7 +134,10 @@
 						if (currentLetters == word)
 							onWin()
 						
-						localStorage.setItem("line" + currentLine, currentLetters)
+						var todayBoard = JSON.parse(localStorage.getItem("dayBoard"))
+						todayBoard["line" + currentLine] = currentLetters
+
+						localStorage.setItem("dayBoard", JSON.stringify(todayBoard))
 
 						currentLine++
 						currentIndex = 0
@@ -155,11 +167,11 @@
 			var histo = new Array(256).fill(0)
 			var wasChecked = new Array(word.length).fill(false)
 
-			for (i = 0; i < word.length; i++) {
+			for (let i = 0; i < word.length; i++) {
 				histo[word.charCodeAt(i)] += 1
 			}
 
-			for (i = 0; i < currentLetters.length; i ++) {
+			for (let i = 0; i < currentLetters.length; i ++) {
 				if (currentLetters[i] == word[i]) {
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--green)";
 					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--green)";
@@ -168,7 +180,7 @@
 				}
 			}
 
-			for (i = 0; i < currentLetters.length; i ++) {
+			for (let i = 0; i < currentLetters.length; i ++) {
 				if (word.includes(currentLetters[i]) && histo[currentLetters.charCodeAt(i)] > 0) {
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--yellow)";
 					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--yellow)";
