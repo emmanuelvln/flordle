@@ -30,6 +30,7 @@
 		var currentLetters = ""
 
 		var isFinished = false
+		var setup = false
 
 		$(document).ready(function(){
 			appendContent();
@@ -96,11 +97,12 @@
 
 			var todayBoard = JSON.parse(localStorage.getItem("dayBoard"))
 			
-			if (todayBoard == null || todayBoard.day != "" + today.getDate() + (today.getMonth() + 1) + today.getFullYear()) {
+			if (todayBoard == null || todayBoard.day != "" + today.getDate() + (today.getMonth() + 1) + today.getFullYear()) {
 				var dayBoard = { "day": "" + today.getDate() + (today.getMonth() + 1) + today.getFullYear(), "line0": "", "line1": "", "line2": "", "line3": "", "line4": "", "line5": "" };
 				localStorage.setItem("dayBoard", JSON.stringify(dayBoard))
 			}
 			else {
+				setup = true
 				for (let i = 0; i < 6; i++) {
 					var line = todayBoard["line" + i]
 					if (line != "") {
@@ -110,6 +112,7 @@
 						pressKey("enter")
 					}
 				}
+				setup = false
 			}
 		}
 
@@ -131,10 +134,12 @@
 					if (currentLetters.length == word.length) {
 						checkLetters()
 						
-						if (currentLetters == word)
+						if (currentLetters == word && !setup)
 							onFinish(true)
-						else if (currentLine == 5)
-							onFinish(false)		
+						else if (currentLine == 5 && !setup)
+							onFinish(false)
+						else if (setup && (currentLetters == word || currentLine == 5))
+							isFinished = true;
 										
 						var todayBoard = JSON.parse(localStorage.getItem("dayBoard"))
 						todayBoard["line" + currentLine] = currentLetters
