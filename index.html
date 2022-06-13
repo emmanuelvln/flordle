@@ -96,6 +96,7 @@
 			localStorage.setItem('flower',flower)
 			word = name.toLowerCase()
 			localStorage.setItem('name',word)
+			console.log(word)
 		}
 
 		function fillBoard() {
@@ -103,6 +104,18 @@
 
 			}
 		}
+
+		document.addEventListener('keydown', event => {
+  			if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122)) {
+    			pressKey(String.fromCharCode(event.keyCode).toLowerCase())
+  			}
+			else if (event.keyCode == 13) {
+				pressKey("enter")
+			}
+			else if (event.keyCode == 8) {
+				pressKey("suppr")
+			}
+		})
 
 		function pressKey(key) {
 			if (!hasWon) {
@@ -140,20 +153,34 @@
 		}
 
 		function checkLetters() {
+			var histo = new Array(256).fill(0)
+			var wasChecked = new Array(word.length).fill(false)
+
+			for (i = 0; i < word.length; i++) {
+				histo[word.charCodeAt(i)] += 1
+			}
+
 			for (i = 0; i < currentLetters.length; i ++) {
 				if (currentLetters[i] == word[i]) {
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--green)";
 					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--green)";
+					histo[currentLetters.charCodeAt(i)] = -1
+					wasChecked[i] = true
 				}
-				else if (word.includes(currentLetters[i])) {
+			}
+
+			for (i = 0; i < currentLetters.length; i ++) {
+				if (word.includes(currentLetters[i]) && histo[currentLetters.charCodeAt(i)] > 0) {
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--yellow)";
 					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--yellow)";
+					histo[currentLetters.charCodeAt(i)] -= 1
 				}
-				else {
+				else if (!wasChecked[i]) {
 					document.getElementById('c' + (currentLine * word.length + i)).style.borderColor = "var(--dark-color)";
 					document.getElementById('c' + (currentLine * word.length + i)).style.backgroundColor = "var(--dark-color)";
 				}
 			}
+
 		}
 
 		function onWin() {
